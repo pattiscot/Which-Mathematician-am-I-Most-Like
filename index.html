@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Which Mathematician Matches Your Thinking Style?</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: rgba(255,255,255,0.08);
+      --card-strong: rgba(255,255,255,0.12);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.70);
+      --line: rgba(255,255,255,0.14);
+      --accent: #6aa6ff;
+      --good: #7ee787;
+      --warn: #f2cc60;
+      --bad: #ff7b72;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(900px 500px at 50% -10%, rgba(106,166,255,0.18), transparent 60%),
+                  radial-gradient(700px 400px at 0% 30%, rgba(126,231,135,0.10), transparent 55%),
+                  radial-gradient(700px 400px at 100% 35%, rgba(242,204,96,0.10), transparent 55%),
+                  var(--bg);
+      color: var(--text);
+    }
+
+    a { color: var(--accent); }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+    }
+
+    header {
+      padding: 14px 6px 8px;
+      text-align: left;
+    }
+
+    h1 {
+      margin: 6px 0 6px;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    h2 {
+      margin: 16px 0 10px;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+    }
+
+    p { margin: 10px 0; color: var(--muted); }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(106,166,255,0.12);
+      border: 1px solid rgba(106,166,255,0.25);
+      border-radius: 999px;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 12px 0;
+    }
+
+    .instructions {
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+    }
+
+    .qhead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .qtitle {
+      margin: 0;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.35;
+    }
+
+    .req {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.06s ease, background 0.12s ease, border-color 0.12s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .opt:active { transform: scale(0.99); }
+
+    .opt:hover { background: rgba(255,255,255,0.075); border-color: rgba(255,255,255,0.18); }
+
+    .opt input {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .opt .label {
+      color: rgba(255,255,255,0.92);
+      font-size: 0.98rem;
+      line-height: 1.35;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 14px 0 8px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.20);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.92);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 12px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+    }
+
+    button.primary {
+      background: linear-gradient(180deg, rgba(106,166,255,0.35), rgba(106,166,255,0.18));
+      border-color: rgba(106,166,255,0.40);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .resultWrap {
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .banner {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.07);
+      margin: 12px 0;
+    }
+
+    .banner.ok { border-color: rgba(126,231,135,0.35); background: rgba(126,231,135,0.10); }
+    .banner.warn { border-color: rgba(242,204,96,0.35); background: rgba(242,204,96,0.10); }
+    .banner.bad { border-color: rgba(255,123,114,0.35); background: rgba(255,123,114,0.10); }
+
+    .scoreGrid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 12px 0 6px;
+    }
+
+    .scoreCard {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .scoreCard strong { color: rgba(255,255,255,0.92); }
+    .score {
+      font-variant-numeric: tabular-nums;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.9);
+      min-width: 46px;
+      text-align: center;
+    }
+
+    details {
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.05);
+      margin-top: 10px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 650;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .profile {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .profile h3 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .profile p { margin: 8px 0; }
+
+    footer {
+      margin-top: 18px;
+      padding: 12px 4px 0;
+      color: rgba(255,255,255,0.62);
+      font-size: 0.92rem;
+      text-align: center;
+    }
+
+    /* Tablet+ */
+    @media (min-width: 720px) {
+      .wrap { padding: 26px 18px 44px; }
+      header { text-align: center; padding: 18px 6px 10px; }
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.15rem; }
+      .options { grid-template-columns: 1fr 1fr; }
+      .actions { grid-template-columns: 1fr 1fr; }
+      .scoreGrid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Desktop */
+    @media (min-width: 980px) {
+      .scoreGrid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="pill">🧮 Senior High School Quiz • Auto-scoring</div>
+      <h1>Which Mathematician Matches Your Thinking Style?</h1>
+      <p>Pick one option per question. Then tap <strong>See My Result</strong>.</p>
+    </header>
+
+    <section class="card instructions" aria-label="Instructions">
+      <h2>Instructions</h2>
+      <p>For each question, choose <strong>one answer (A–D)</strong>. There are no right or wrong answers—this is about how <em>you</em> tend to think and learn.</p>
+      <p><strong>Tip:</strong> If you’re tied, you might be a hybrid (very normal!).</p>
+    </section>
+
+    <form id="quiz" aria-label="Mathematician Thinking Style Quiz">
+      <section class="card question" data-q="1">
+        <div class="qhead">
+          <p class="qtitle">1. When you get stuck on a hard math problem, you usually…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 1">
+          <label class="opt"><input type="radio" name="q1" value="A" /> <span class="label"><strong>A.</strong> Sit quietly and think it through step by step</span></label>
+          <label class="opt"><input type="radio" name="q1" value="B" /> <span class="label"><strong>B.</strong> Try lots of ideas quickly and see what works</span></label>
+          <label class="opt"><input type="radio" name="q1" value="C" /> <span class="label"><strong>C.</strong> Rewrite the problem carefully and organize your work</span></label>
+          <label class="opt"><input type="radio" name="q1" value="D" /> <span class="label"><strong>D.</strong> Look for patterns or a new way to see the problem</span></label>
+        </div>
+      </section>
+
+      <section class="card question" data-q="2">
+        <div class="qhead">
+          <p class="qtitle">2. In class, you feel most confident when…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 2">
+          <label class="opt"><input type="radio" name="q2" value="A" /> <span class="label"><strong>A.</strong> You’ve had time to think before answering</span></label>
+          <label class="opt"><input type="radio" name="q2" value="B" /> <span class="label"><strong>B.</strong> You can experiment or guess freely</span></label>
+          <label class="opt"><input type="radio" name="q2" value="C" /> <span class="label"><strong>C.</strong> The teacher explains things clearly and logically</span></label>
+          <label class="opt"><input type="radio" name="q2" value="D" /> <span class="label"><strong>D.</strong> You can connect the topic to other ideas</span></label>
+        </div>
+      </section>
+
+      <section class="card question" data-q="3">
+        <div class="qhead">
+          <p class="qtitle">3. Your notes usually look…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 3">
+          <label class="opt"><input type="radio" name="q3" value="A" /> <span class="label"><strong>A.</strong> Short and focused</span></label>
+          <label class="opt"><input type="radio" name="q3" value="B" /> <span class="label"><strong>B.</strong> Messy but full of ideas</span></label>
+          <label class="opt"><input type="radio" name="q3" value="C" /> <span class="label"><strong>C.</strong> Neat and well-organized</span></label>
+          <label class="opt"><input type="radio" name="q3" value="D" /> <span class="label"><strong>D.</strong> Diagrams, arrows, and connections</span></label>
+        </div>
+      </section>
+
+      <section class="card question" data-q="4">
+        <div class="qhead">
+          <p class="qtitle">4. Group projects make you want to…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 4">
+          <label class="opt"><input type="radio" name="q4" value="A" /> <span class="label"><strong>A.</strong> Work independently, then share results</span></label>
+          <label class="opt"><input type="radio" name="q4" value="B" /> <span class="label"><strong>B.</strong> Lead with ideas and energy</span></label>
+          <label class="opt"><input type="radio" name="q4" value="C" /> <span class="label"><strong>C.</strong> Keep everyone on track</span></label>
+          <label class="opt"><input type="radio" name="q4" value="D" /> <span class="label"><strong>D.</strong> Brainstorm and link ideas together</span></label>
+        </div>
+      </section>
+
+      <section class="card question" data-q="5">
+        <div class="qhead">
+          <p class="qtitle">5. You enjoy math most when it…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 5">
+          <label class="opt"><input type="radio" name="q5" value="A" /> <span class="label"><strong>A.</strong> Feels deep and challenging</span></label>
+          <label class="opt"><input type="radio" name="q5" value="B" /> <span class="label"><strong>B.</strong> Feels creative and exciting</span></label>
+          <label class="opt"><input type="radio" name="q5" value="C" /> <span class="label"><strong>C.</strong> Feels clear and logical</span></label>
+          <label class="opt"><input type="radio" name="q5" value="D" /> <span class="label"><strong>D.</strong> Feels connected to many topics</span></label>
+        </div>
+      </section>
+
+      <section class="card question" data-q="6">
+        <div class="qhead">
+          <p class="qtitle">6. Teachers might describe you as…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 6">
+          <label class="opt"><input type="radio" name="q6" value="A" /> <span class="label"><strong>A.</strong> Thoughtful and serious</span></label>
+          <label class="opt"><input type="radio" name="q6" value="B" /> <span class="label"><strong>B.</strong> Energetic and original</span></label>
+          <label class="opt"><input type="radio" name="q6" value="C" /> <span class="label"><strong>C.</strong> Reliable and careful</span></label>
+          <label class="opt"><input type="radio" name="q6" value="D" /> <span class="label"><strong>D.</strong> Curious and imaginative</span></label>
+        </div>
+      </section>
+
+      <section class="card question" data-q="7">
+        <div class="qhead">
+          <p class="qtitle">7. When learning something new, you prefer…</p>
+          <span class="req">Required</span>
+        </div>
+        <div class="options" role="radiogroup" aria-label="Question 7">
+          <label class="opt"><input type="radio" name="q7" value="A" /> <span class="label"><strong>A.</strong> Thinking it through on your own first</span></label>
+          <label class="opt"><input type="radio" name="q7" value="B" /> <span class="label"><strong>B.</strong> Jumping in and trying examples</span></label>
+          <label class="opt"><input type="radio" name="q7" value="C" /> <span class="label"><strong>C.</strong> Following clear steps</span></label>
+          <label class="opt"><input type="radio" name="q7" value="D" /> <span class="label"><strong>D.</strong> Seeing the big picture</span></label>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Actions">
+        <h2>Get your result</h2>
+        <p id="progress" aria-live="polite">Answered <strong>0</strong> of <strong>7</strong> questions.</p>
+        <div class="actions">
+          <button type="button" class="primary" id="btnScore">See My Result</button>
+          <button type="button" id="btnReset">Reset</button>
+        </div>
+        <div id="messages" aria-live="polite"></div>
+
+        <div class="resultWrap" id="resultWrap" hidden>
+          <div class="banner ok" id="topBanner" role="status">
+            <div aria-hidden="true">✅</div>
+            <div>
+              <div style="color: rgba(255,255,255,0.95); font-weight: 750;">Your match: <span id="winnerName"></span></div>
+              <div style="color: rgba(255,255,255,0.75);">Based on your answers, this thinking style fits you best. (Ties are possible!)</div>
+            </div>
+          </div>
+
+          <div class="scoreGrid" aria-label="Score breakdown">
+            <div class="scoreCard"><strong>Gauss</strong> <span class="score" id="scoreGauss">0</span></div>
+            <div class="scoreCard"><strong>Ramanujan</strong> <span class="score" id="scoreRamanujan">0</span></div>
+            <div class="scoreCard"><strong>Hilbert</strong> <span class="score" id="scoreHilbert">0</span></div>
+            <div class="scoreCard"><strong>Noether</strong> <span class="score" id="scoreNoether">0</span></div>
+          </div>
+
+          <div class="profile" id="profile"></div>
+
+          <details>
+            <summary>How scoring works</summary>
+            <p style="margin-top:10px;">For each question, your letter (A–D) adds points using these weights:</p>
+            <div class="scoreGrid" style="margin-top:10px;">
+              <div class="scoreCard"><strong>A</strong> <span class="score">Gauss +2 • Hilbert +1</span></div>
+              <div class="scoreCard"><strong>B</strong> <span class="score">Ramanujan +2 • Noether +1</span></div>
+              <div class="scoreCard"><strong>C</strong> <span class="score">Hilbert +2 • Gauss +1</span></div>
+              <div class="scoreCard"><strong>D</strong> <span class="score">Noether +2 • Ramanujan +1</span></div>
+            </div>
+          </details>
+        </div>
+      </section>
+    </form>
+
+    <footer>
+      <p>If your scores are close or tied, that’s normal—most people use a mix of thinking styles.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Scoring weights per answer choice
+    const weights = {
+      A: { gauss: 2, ramanujan: 0, hilbert: 1, noether: 0 },
+      B: { gauss: 0, ramanujan: 2, hilbert: 0, noether: 1 },
+      C: { gauss: 1, ramanujan: 0, hilbert: 2, noether: 0 },
+      D: { gauss: 0, ramanujan: 1, hilbert: 0, noether: 2 },
+    };
+
+    const profiles = {
+      gauss: {
+        title: "The Gauss Thinker",
+        desc: "You like to work carefully and deeply. You may be quiet in class, but you think a lot before speaking. You do best with challenging problems that reward patience.",
+        strengths: "Focus, depth, accuracy",
+        tip: "Share your thinking more often—others can learn from it.",
+      },
+      ramanujan: {
+        title: "The Ramanujan Thinker",
+        desc: "You rely on intuition and creativity. You’re not afraid to try unusual ideas, and sometimes solutions come to you suddenly.",
+        strengths: "Creativity, originality",
+        tip: "Practice explaining your reasoning step by step.",
+      },
+      hilbert: {
+        title: "The Hilbert Thinker",
+        desc: "You like clear definitions, logical steps, and well-organized work. You often help others understand difficult ideas.",
+        strengths: "Organization, clarity, leadership",
+        tip: "Try open-ended problems with more than one solution.",
+      },
+      noether: {
+        title: "The Noether Thinker",
+        desc: "You excel at seeing connections and understanding why things work. You enjoy the big picture and abstract ideas.",
+        strengths: "Big-picture thinking, making connections",
+        tip: "Write down steps so others can follow your insights.",
+      },
+    };
+
+    const totalQuestions = 7;
+
+    const quiz = document.getElementById('quiz');
+    const progress = document.getElementById('progress');
+    const messages = document.getElementById('messages');
+    const btnScore = document.getElementById('btnScore');
+    const btnReset = document.getElementById('btnReset');
+
+    const resultWrap = document.getElementById('resultWrap');
+    const winnerName = document.getElementById('winnerName');
+    const profileBox = document.getElementById('profile');
+
+    const scoreEls = {
+      gauss: document.getElementById('scoreGauss'),
+      ramanujan: document.getElementById('scoreRamanujan'),
+      hilbert: document.getElementById('scoreHilbert'),
+      noether: document.getElementById('scoreNoether'),
+    };
+
+    function answeredCount() {
+      let count = 0;
+      for (let i = 1; i <= totalQuestions; i++) {
+        if (quiz.querySelector(`input[name=\"q${i}\"]:checked`)) count++;
+      }
+      return count;
+    }
+
+    function setProgress() {
+      const n = answeredCount();
+      progress.innerHTML = `Answered <strong>${n}</strong> of <strong>${totalQuestions}</strong> questions.`;
+      // Enable scoring only when all are answered
+      btnScore.disabled = n !== totalQuestions;
+      if (n === totalQuestions) {
+        messages.innerHTML = '';
+      }
+    }
+
+    function computeScores() {
+      const scores = { gauss: 0, ramanujan: 0, hilbert: 0, noether: 0 };
+      for (let i = 1; i <= totalQuestions; i++) {
+        const picked = quiz.querySelector(`input[name=\"q${i}\"]:checked`);
+        if (!picked) continue;
+        const w = weights[picked.value];
+        scores.gauss += w.gauss;
+        scores.ramanujan += w.ramanujan;
+        scores.hilbert += w.hilbert;
+        scores.noether += w.noether;
+      }
+      return scores;
+    }
+
+    function pickWinners(scores) {
+      const entries = Object.entries(scores);
+      const max = Math.max(...entries.map(([, v]) => v));
+      return entries.filter(([, v]) => v === max).map(([k]) => k);
+    }
+
+    function renderResult(scores) {
+      // Update numbers
+      Object.keys(scores).forEach(k => { scoreEls[k].textContent = scores[k]; });
+
+      const winners = pickWinners(scores);
+      const titleNames = winners.map(k => profiles[k].title.replace('The ', '').replace(' Thinker',''));
+      winnerName.textContent = titleNames.join(' + ');
+
+      // Build profile content
+      if (winners.length === 1) {
+        const k = winners[0];
+        const p = profiles[k];
+        profileBox.innerHTML = `
+          <h3>${p.title}</h3>
+          <p>${p.desc}</p>
+          <p><strong>Strengths:</strong> ${p.strengths}<br><strong>Tip:</strong> ${p.tip}</p>
+        `;
+      } else {
+        // Tie: show both/all
+        profileBox.innerHTML = `
+          <h3>Hybrid Thinker</h3>
+          <p>You tied across multiple styles—nice! Here are your top matches:</p>
+          ${winners.map(k => {
+            const p = profiles[k];
+            return `
+              <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.12);">
+                <div style="font-weight:800; color: rgba(255,255,255,0.95);">${p.title}</div>
+                <p style="margin:8px 0;">${p.desc}</p>
+                <p style="margin:8px 0;"><strong>Strengths:</strong> ${p.strengths}<br><strong>Tip:</strong> ${p.tip}</p>
+              </div>
+            `;
+          }).join('')}
+        `;
+      }
+
+      resultWrap.hidden = false;
+      resultWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showMissingMessage() {
+      messages.innerHTML = `
+        <div class="banner warn" role="alert">
+          <div aria-hidden="true">⚠️</div>
+          <div>
+            <div style="color: rgba(255,255,255,0.95); font-weight: 750;">Almost there</div>
+            <div style="color: rgba(255,255,255,0.75);">Please answer all questions to see your result.</div>
+          </div>
+        </div>
+      `;
+      resultWrap.hidden = true;
+    }
+
+    quiz.addEventListener('change', setProgress);
+
+    btnScore.addEventListener('click', () => {
+      const n = answeredCount();
+      if (n !== totalQuestions) {
+        showMissingMessage();
+        return;
+      }
+      const scores = computeScores();
+      renderResult(scores);
+    });
+
+    btnReset.addEventListener('click', () => {
+      quiz.reset();
+      messages.innerHTML = '';
+      resultWrap.hidden = true;
+      setProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initial state
+    setProgress();
+  </script>
+</body>
+</html>
