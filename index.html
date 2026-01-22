@@ -32,8 +32,6 @@
       color: var(--text);
     }
 
-    a { color: var(--accent); }
-
     .wrap {
       max-width: 980px;
       margin: 0 auto;
@@ -132,7 +130,6 @@
     }
 
     .opt:active { transform: scale(0.99); }
-
     .opt:hover { background: rgba(255,255,255,0.075); border-color: rgba(255,255,255,0.18); }
 
     .opt input {
@@ -161,7 +158,7 @@
       border: 1px solid rgba(255,255,255,0.20);
       background: rgba(255,255,255,0.08);
       color: rgba(255,255,255,0.92);
-      font-weight: 600;
+      font-weight: 650;
       font-size: 1rem;
       padding: 12px 14px;
       border-radius: 14px;
@@ -199,7 +196,6 @@
 
     .banner.ok { border-color: rgba(126,231,135,0.35); background: rgba(126,231,135,0.10); }
     .banner.warn { border-color: rgba(242,204,96,0.35); background: rgba(242,204,96,0.10); }
-    .banner.bad { border-color: rgba(255,123,114,0.35); background: rgba(255,123,114,0.10); }
 
     .scoreGrid {
       display: grid;
@@ -220,6 +216,7 @@
     }
 
     .scoreCard strong { color: rgba(255,255,255,0.92); }
+
     .score {
       font-variant-numeric: tabular-nums;
       padding: 6px 10px;
@@ -229,6 +226,72 @@
       color: rgba(255,255,255,0.9);
       min-width: 46px;
       text-align: center;
+    }
+
+    .typesGrid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .typeCard {
+      position: relative;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      overflow: hidden;
+      transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .typeCard:hover { transform: translateY(-1px); }
+
+    .typeCard h3 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .typeTop {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .typeMeta {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .typeCard.highlight {
+      border-color: rgba(106,166,255,0.55);
+      box-shadow: 0 0 0 1px rgba(106,166,255,0.25), 0 12px 28px rgba(0,0,0,0.35);
+      background: linear-gradient(180deg, rgba(106,166,255,0.16), rgba(255,255,255,0.06));
+    }
+
+    .typeCard.highlight::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(400px 150px at 20% 0%, rgba(106,166,255,0.22), transparent 55%);
+      pointer-events: none;
     }
 
     details {
@@ -241,26 +304,9 @@
 
     summary {
       cursor: pointer;
-      font-weight: 650;
+      font-weight: 700;
       color: rgba(255,255,255,0.92);
     }
-
-    .profile {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-    }
-
-    .profile h3 {
-      margin: 0 0 6px;
-      font-size: 1.05rem;
-      letter-spacing: -0.01em;
-      color: rgba(255,255,255,0.95);
-    }
-
-    .profile p { margin: 8px 0; }
 
     footer {
       margin-top: 18px;
@@ -279,26 +325,28 @@
       .options { grid-template-columns: 1fr 1fr; }
       .actions { grid-template-columns: 1fr 1fr; }
       .scoreGrid { grid-template-columns: 1fr 1fr; }
+      .typesGrid { grid-template-columns: 1fr 1fr; }
     }
 
     /* Desktop */
     @media (min-width: 980px) {
       .scoreGrid { grid-template-columns: 1fr 1fr 1fr 1fr; }
+      .typesGrid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <div class="pill">🧮 Senior High School Quiz • Auto-scoring</div>
+      <div class="pill">🧮 Senior High School Quiz • Auto-scoring • See all types</div>
       <h1>Which Mathematician Matches Your Thinking Style?</h1>
-      <p>Pick one option per question. Then tap <strong>See My Result</strong>.</p>
+      <p>Choose one option per question. Then tap <strong>See My Result</strong> to highlight your best match.</p>
     </header>
 
     <section class="card instructions" aria-label="Instructions">
       <h2>Instructions</h2>
       <p>For each question, choose <strong>one answer (A–D)</strong>. There are no right or wrong answers—this is about how <em>you</em> tend to think and learn.</p>
-      <p><strong>Tip:</strong> If you’re tied, you might be a hybrid (very normal!).</p>
+      <p><strong>Tip:</strong> If you tie, you’re a hybrid (very normal!). The page will highlight all your top matches.</p>
     </section>
 
     <form id="quiz" aria-label="Mathematician Thinking Style Quiz">
@@ -406,8 +454,8 @@
           <div class="banner ok" id="topBanner" role="status">
             <div aria-hidden="true">✅</div>
             <div>
-              <div style="color: rgba(255,255,255,0.95); font-weight: 750;">Your match: <span id="winnerName"></span></div>
-              <div style="color: rgba(255,255,255,0.75);">Based on your answers, this thinking style fits you best. (Ties are possible!)</div>
+              <div style="color: rgba(255,255,255,0.95); font-weight: 800;">Your best match: <span id="winnerName"></span></div>
+              <div style="color: rgba(255,255,255,0.75);">We highlighted your top match below so it stands out from the other types.</div>
             </div>
           </div>
 
@@ -418,7 +466,9 @@
             <div class="scoreCard"><strong>Noether</strong> <span class="score" id="scoreNoether">0</span></div>
           </div>
 
-          <div class="profile" id="profile"></div>
+          <h2>All personality types</h2>
+          <p>Read all four styles. Your top match is marked with <span class="badge">⭐ Your match</span>.</p>
+          <div class="typesGrid" id="typesGrid" aria-label="All mathematician personality types"></div>
 
           <details>
             <summary>How scoring works</summary>
@@ -448,27 +498,36 @@
       D: { gauss: 0, ramanujan: 1, hilbert: 0, noether: 2 },
     };
 
-    const profiles = {
+    // Personality type blurbs (student-friendly)
+    const types = {
       gauss: {
+        name: "Gauss",
         title: "The Gauss Thinker",
+        vibe: "Deep focus • careful reasoning",
         desc: "You like to work carefully and deeply. You may be quiet in class, but you think a lot before speaking. You do best with challenging problems that reward patience.",
         strengths: "Focus, depth, accuracy",
         tip: "Share your thinking more often—others can learn from it.",
       },
       ramanujan: {
+        name: "Ramanujan",
         title: "The Ramanujan Thinker",
+        vibe: "Creative intuition • bold ideas",
         desc: "You rely on intuition and creativity. You’re not afraid to try unusual ideas, and sometimes solutions come to you suddenly.",
         strengths: "Creativity, originality",
         tip: "Practice explaining your reasoning step by step.",
       },
       hilbert: {
+        name: "Hilbert",
         title: "The Hilbert Thinker",
+        vibe: "Clear structure • organized steps",
         desc: "You like clear definitions, logical steps, and well-organized work. You often help others understand difficult ideas.",
         strengths: "Organization, clarity, leadership",
         tip: "Try open-ended problems with more than one solution.",
       },
       noether: {
+        name: "Noether",
         title: "The Noether Thinker",
+        vibe: "Big-picture links • seeing connections",
         desc: "You excel at seeing connections and understanding why things work. You enjoy the big picture and abstract ideas.",
         strengths: "Big-picture thinking, making connections",
         tip: "Write down steps so others can follow your insights.",
@@ -485,7 +544,6 @@
 
     const resultWrap = document.getElementById('resultWrap');
     const winnerName = document.getElementById('winnerName');
-    const profileBox = document.getElementById('profile');
 
     const scoreEls = {
       gauss: document.getElementById('scoreGauss'),
@@ -493,6 +551,8 @@
       hilbert: document.getElementById('scoreHilbert'),
       noether: document.getElementById('scoreNoether'),
     };
+
+    const typesGrid = document.getElementById('typesGrid');
 
     function answeredCount() {
       let count = 0;
@@ -505,11 +565,8 @@
     function setProgress() {
       const n = answeredCount();
       progress.innerHTML = `Answered <strong>${n}</strong> of <strong>${totalQuestions}</strong> questions.`;
-      // Enable scoring only when all are answered
       btnScore.disabled = n !== totalQuestions;
-      if (n === totalQuestions) {
-        messages.innerHTML = '';
-      }
+      if (n === totalQuestions) messages.innerHTML = '';
     }
 
     function computeScores() {
@@ -532,52 +589,53 @@
       return entries.filter(([, v]) => v === max).map(([k]) => k);
     }
 
+    function renderAllTypes(winners) {
+      const order = ['gauss','ramanujan','hilbert','noether'];
+      typesGrid.innerHTML = order.map(k => {
+        const t = types[k];
+        const isWin = winners.includes(k);
+        return `
+          <article class=\"typeCard ${isWin ? 'highlight' : ''}\" id=\"type-${k}\" aria-label=\"${t.title}\">
+            <div class=\"typeTop\">
+              <div>
+                <h3>${t.title}</h3>
+                <div class=\"typeMeta\">${t.vibe}</div>
+              </div>
+              <div>
+                ${isWin ? '<span class="badge">⭐ Your match</span>' : ''}
+              </div>
+            </div>
+            <p style=\"margin-top:10px;\">${t.desc}</p>
+            <p><strong>Strengths:</strong> ${t.strengths}<br><strong>Tip:</strong> ${t.tip}</p>
+          </article>
+        `;
+      }).join('');
+    }
+
     function renderResult(scores) {
-      // Update numbers
       Object.keys(scores).forEach(k => { scoreEls[k].textContent = scores[k]; });
 
       const winners = pickWinners(scores);
-      const titleNames = winners.map(k => profiles[k].title.replace('The ', '').replace(' Thinker',''));
-      winnerName.textContent = titleNames.join(' + ');
+      const titleNames = winners.map(k => types[k].name).join(' + ');
+      winnerName.textContent = titleNames;
 
-      // Build profile content
-      if (winners.length === 1) {
-        const k = winners[0];
-        const p = profiles[k];
-        profileBox.innerHTML = `
-          <h3>${p.title}</h3>
-          <p>${p.desc}</p>
-          <p><strong>Strengths:</strong> ${p.strengths}<br><strong>Tip:</strong> ${p.tip}</p>
-        `;
-      } else {
-        // Tie: show both/all
-        profileBox.innerHTML = `
-          <h3>Hybrid Thinker</h3>
-          <p>You tied across multiple styles—nice! Here are your top matches:</p>
-          ${winners.map(k => {
-            const p = profiles[k];
-            return `
-              <div style="margin-top:12px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.12);">
-                <div style="font-weight:800; color: rgba(255,255,255,0.95);">${p.title}</div>
-                <p style="margin:8px 0;">${p.desc}</p>
-                <p style="margin:8px 0;"><strong>Strengths:</strong> ${p.strengths}<br><strong>Tip:</strong> ${p.tip}</p>
-              </div>
-            `;
-          }).join('')}
-        `;
-      }
+      renderAllTypes(winners);
 
       resultWrap.hidden = false;
       resultWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Nudge focus to the first highlighted card for accessibility
+      const first = document.querySelector('.typeCard.highlight');
+      if (first) first.focus?.();
     }
 
     function showMissingMessage() {
       messages.innerHTML = `
-        <div class="banner warn" role="alert">
-          <div aria-hidden="true">⚠️</div>
+        <div class=\"banner warn\" role=\"alert\">
+          <div aria-hidden=\"true\">⚠️</div>
           <div>
-            <div style="color: rgba(255,255,255,0.95); font-weight: 750;">Almost there</div>
-            <div style="color: rgba(255,255,255,0.75);">Please answer all questions to see your result.</div>
+            <div style=\"color: rgba(255,255,255,0.95); font-weight: 800;\">Almost there</div>
+            <div style=\"color: rgba(255,255,255,0.75);\">Please answer all questions to see your result.</div>
           </div>
         </div>
       `;
@@ -588,10 +646,7 @@
 
     btnScore.addEventListener('click', () => {
       const n = answeredCount();
-      if (n !== totalQuestions) {
-        showMissingMessage();
-        return;
-      }
+      if (n !== totalQuestions) return showMissingMessage();
       const scores = computeScores();
       renderResult(scores);
     });
@@ -604,7 +659,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Initial state
     setProgress();
   </script>
 </body>
